@@ -1,6 +1,8 @@
 package models
 
 const (
+	UserTypeSuperAdmin = "superAdmin"
+	UserTypeUser       = "user"
 	UserStatusEnabled  = "enabled"
 	UserStatusDisabled = "disabled"
 )
@@ -14,5 +16,6 @@ type User struct {
 	UserBase  `bson:",inline"`
 	FirstName string `bson:"first_name" json:"first_name" validate:"required"`
 	LastName  string `json:"last_name" validate:"required"`
+	Type      string
 	Status    string
 }

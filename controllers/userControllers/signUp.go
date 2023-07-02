@@ -49,6 +49,7 @@ func SignUpController() gin.HandlerFunc {
 			{Key: "first_name", Value: user.FirstName},
 			{Key: "last_name", Value: user.LastName},
 			{Key: "status", Value: models.UserStatusEnabled},
+			{Key: "type", Value: models.UserTypeUser},
 		})
 
 		if err != nil {
