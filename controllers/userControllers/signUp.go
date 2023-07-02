@@ -46,8 +46,9 @@ func SignUpController() gin.HandlerFunc {
 		result, err := database.UserCollection().InsertOne(context.TODO(), bson.D{
 			{Key: "email", Value: user.Email},
 			{Key: "password", Value: user.Password},
-			{Key: "FirstName", Value: user.FirstName},
-			{Key: "LastName", Value: user.LastName},
+			{Key: "first_name", Value: user.FirstName},
+			{Key: "last_name", Value: user.LastName},
+			{Key: "status", Value: models.UserStatusEnabled},
 		})
 
 		if err != nil {
