@@ -40,10 +40,14 @@ func InitDB() {
 	fmt.Println("MongoDB connected")
 }
 
+func getCollection(collectionName string) *mongo.Collection {
+	return mongoClient.Database(DATABASE).Collection(collectionName)
+}
+
 func UserCollection() *mongo.Collection {
 	return getCollection("users")
 }
 
-func getCollection(collectionName string) *mongo.Collection {
-	return mongoClient.Database(DATABASE).Collection(collectionName)
+func ListCollection() *mongo.Collection {
+	return getCollection("lists")
 }

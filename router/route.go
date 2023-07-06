@@ -1,14 +1,11 @@
 package router
 
 import (
+	"github.com/TranHungKT/email_management/controllers/listControllers"
 	"github.com/TranHungKT/email_management/controllers/userControllers"
 	"github.com/TranHungKT/email_management/middleware"
-	"github.com/adam-hanna/jwt-auth/jwt"
 	"github.com/gin-gonic/gin"
 )
-
-var restrictedRoute jwt.Auth
-var HMACKey []byte
 
 func InitGin() {
 	middleware.InitRestrictedRoute()
@@ -19,10 +16,15 @@ func InitGin() {
 	})
 
 	UserRoutes(router)
+	ListRoutes(router)
 	router.Run()
 }
 
 func UserRoutes(router *gin.Engine) {
 	router.POST("/sign-up", userControllers.SignUpController())
 	router.POST("/login", userControllers.LoginController())
+}
+
+func ListRoutes(router *gin.Engine) {
+	router.POST("/create-new-list", middleware.RestrictedFunc(), listControllers.CreateNewListController())
 }
