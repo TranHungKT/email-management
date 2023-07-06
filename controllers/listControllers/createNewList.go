@@ -9,7 +9,6 @@ import (
 	"github.com/TranHungKT/email_management/models"
 	"github.com/TranHungKT/email_management/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -21,12 +20,13 @@ func CreateNewListController() gin.HandlerFunc {
 
 		var list models.List
 
-		utils.BindJSON(ctx, &list)
+		err := utils.BindJSON(ctx, &list)
+		if err != nil {
+			return
+		}
 
-		validationErr := validator.New().Struct(list)
-
-		if validationErr != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+		err = utils.ValidateByStruct(ctx, &list)
+		if err != nil {
 			return
 		}
 
@@ -34,6 +34,7 @@ func CreateNewListController() gin.HandlerFunc {
 
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		if count > 0 {
 			ctx.JSON(http.StatusConflict, gin.H{"error": "This list name is not available"})

@@ -10,7 +10,6 @@ import (
 	"github.com/TranHungKT/email_management/models"
 	"github.com/TranHungKT/email_management/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -21,16 +20,18 @@ func LoginController() gin.HandlerFunc {
 
 		var user models.UserBase
 
-		utils.BindJSON(ctx, &user)
-		validationErr := validator.New().Struct(&user)
+		err := utils.BindJSON(ctx, &user)
+		if err != nil {
+			return
+		}
 
-		if validationErr != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+		err = utils.ValidateByStruct(ctx, &user)
+		if err != nil {
 			return
 		}
 
 		var foundUser models.User
-		err := database.UserCollection().FindOne(context.TODO(), bson.D{{Key: "email", Value: user.Email}}).Decode(&foundUser)
+		err = database.UserCollection().FindOne(context.TODO(), bson.D{{Key: "email", Value: user.Email}}).Decode(&foundUser)
 
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

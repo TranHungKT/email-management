@@ -9,7 +9,6 @@ import (
 	"github.com/TranHungKT/email_management/models"
 	"github.com/TranHungKT/email_management/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -20,12 +19,14 @@ func SignUpController() gin.HandlerFunc {
 		defer cancel()
 
 		var user models.User
-		utils.BindJSON(ctx, &user)
 
-		validationErr := validator.New().Struct(&user)
+		err := utils.BindJSON(ctx, &user)
+		if err != nil {
+			return
+		}
 
-		if validationErr != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+		err = utils.ValidateByStruct(ctx, &user)
+		if err != nil {
 			return
 		}
 
@@ -33,6 +34,7 @@ func SignUpController() gin.HandlerFunc {
 
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 
 		if count > 0 {
