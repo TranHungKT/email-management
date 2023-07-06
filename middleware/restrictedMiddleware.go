@@ -17,7 +17,7 @@ func InitRestrictedRoute() {
 	authErr := jwt.New(&restrictedRoute, jwt.Options{
 		SigningMethodString:   "HS256",
 		RefreshTokenValidTime: 72 * time.Hour,
-		AuthTokenValidTime:    15 * time.Minute,
+		AuthTokenValidTime:    15 * time.Hour,
 		Debug:                 false,
 		IsDevEnv:              true,
 		HMACKey:               []byte("My super secret key!"),

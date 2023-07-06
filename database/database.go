@@ -14,6 +14,11 @@ import (
 var mongoClient *mongo.Client
 var DATABASE = "email_management"
 
+const (
+	USER_COLLECTION = "users"
+	LIST_COLLECTION = "lists"
+)
+
 func InitDB() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("NO .env found")
@@ -40,10 +45,14 @@ func InitDB() {
 	fmt.Println("MongoDB connected")
 }
 
-func UserCollection() *mongo.Collection {
-	return getCollection("users")
-}
-
 func getCollection(collectionName string) *mongo.Collection {
 	return mongoClient.Database(DATABASE).Collection(collectionName)
+}
+
+func UserCollection() *mongo.Collection {
+	return getCollection(USER_COLLECTION)
+}
+
+func ListCollection() *mongo.Collection {
+	return getCollection(LIST_COLLECTION)
 }
