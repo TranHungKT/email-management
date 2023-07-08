@@ -15,8 +15,9 @@ var mongoClient *mongo.Client
 var DATABASE = "email_management"
 
 const (
-	USER_COLLECTION = "users"
-	LIST_COLLECTION = "lists"
+	USER_COLLECTION       = "users"
+	LIST_COLLECTION       = "lists"
+	SUBSCRIBER_COLLECTION = "subscribers"
 )
 
 func InitDB() {
@@ -55,4 +56,8 @@ func UserCollection() *mongo.Collection {
 
 func ListCollection() *mongo.Collection {
 	return getCollection(LIST_COLLECTION)
+}
+
+func SubscriberCollection() *mongo.Collection {
+	return getCollection(SUBSCRIBER_COLLECTION)
 }

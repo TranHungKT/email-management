@@ -20,12 +20,7 @@ func CreateNewListController() gin.HandlerFunc {
 
 		var list models.List
 
-		err := utils.BindJSON(ctx, &list)
-		if err != nil {
-			return
-		}
-
-		err = utils.ValidateByStruct(ctx, &list)
+		err := utils.BindJSONAndValidateByStruct(ctx, &list)
 		if err != nil {
 			return
 		}

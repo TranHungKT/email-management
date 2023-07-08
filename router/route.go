@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/TranHungKT/email_management/controllers/listControllers"
+	"github.com/TranHungKT/email_management/controllers/subscriberControllers"
 	"github.com/TranHungKT/email_management/controllers/userControllers"
 	"github.com/TranHungKT/email_management/middleware"
 	"github.com/gin-gonic/gin"
@@ -17,14 +18,19 @@ func InitGin() {
 
 	UserRoutes(router)
 	ListRoutes(router)
+	SubscriberRoutes(router)
 	router.Run()
 }
 
 func UserRoutes(router *gin.Engine) {
-	router.POST("/sign-up", userControllers.SignUpController())
-	router.POST("/login", userControllers.LoginController())
+	router.POST("auth/sign-up", userControllers.SignUpController())
+	router.POST("auth/login", userControllers.LoginController())
 }
 
 func ListRoutes(router *gin.Engine) {
-	router.POST("/create-new-list", middleware.RestrictedFunc(), listControllers.CreateNewListController())
+	router.POST("list/create-new-list", middleware.RestrictedFunc(), listControllers.CreateNewListController())
+}
+
+func SubscriberRoutes(router *gin.Engine) {
+	router.POST("/subscriber/create-new-subscriber", middleware.RestrictedFunc(), subscriberControllers.CreateNewSubscriberController())
 }
