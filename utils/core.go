@@ -23,6 +23,31 @@ func BindJSON(ctx *gin.Context, model interface{}) error {
 	return nil
 }
 
+func ValidateByStruct(ctx *gin.Context, payload interface{}) error {
+	validationErr := validator.New().Struct(payload)
+
+	if validationErr != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+		ctx.Abort()
+		return errors.New("VALIDATION_ERROR")
+	}
+	return nil
+}
+
+func BindJSONAndValidateByStruct(ctx *gin.Context, payload interface{}) error {
+	err := BindJSON(ctx, payload)
+	if err != nil {
+		return err
+	}
+
+	err = ValidateByStruct(ctx, payload)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
 func NormalizeTags(tags []string) []string {
 	var (
 		out  []string
@@ -38,15 +63,4 @@ func NormalizeTags(tags []string) []string {
 	}
 
 	return out
-}
-
-func ValidateByStruct(ctx *gin.Context, payload interface{}) error {
-	validationErr := validator.New().Struct(payload)
-
-	if validationErr != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
-		ctx.Abort()
-		return errors.New("VALIDATION_ERROR")
-	}
-	return nil
 }

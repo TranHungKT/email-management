@@ -1,8 +1,9 @@
-package userControllers
+package subscriberControllers
 
 import (
 	"context"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/TranHungKT/email_management/database"
@@ -13,19 +14,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func SignUpController() gin.HandlerFunc {
+func CreateNewSubscriberController() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		defer cancel()
 
-		var user models.User
+		var newSubscriber models.Subscriber
 
-		err := utils.BindJSONAndValidateByStruct(ctx, &user)
+		err := utils.BindJSONAndValidateByStruct(ctx, &newSubscriber)
 		if err != nil {
 			return
 		}
 
-		count, err := database.UserCollection().CountDocuments(context.TODO(), bson.D{primitive.E{Key: "email", Value: user.Email}})
+		count, err := database.SubscriberCollection().CountDocuments(context.TODO(), bson.D{primitive.E{Key: "email", Value: newSubscriber.Email}})
 
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -33,21 +34,21 @@ func SignUpController() gin.HandlerFunc {
 		}
 
 		if count > 0 {
-			ctx.JSON(http.StatusConflict, gin.H{"error": "This user already exist"})
+			ctx.JSON(http.StatusConflict, gin.H{"error": "This list subscriber has already subscribed, please update list for it or use other email"})
 			return
 		}
 
-		if user.Type == "" {
-			user.Type = models.UserTypeUser
+		if newSubscriber.Status == "" {
+			newSubscriber.Status = models.SubscriberStatusEnabled
 		}
 
-		if user.Status == "" {
-			user.Status = models.UserStatusEnabled
-		}
+		newSubscriber.Name = strings.TrimSpace(newSubscriber.Name)
 
-		result, err := database.UserCollection().InsertOne(context.TODO(), &user)
+		result, err := database.SubscriberCollection().InsertOne(context.TODO(), &newSubscriber)
+
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		}
 
 		ctx.JSON(http.StatusAccepted, result)

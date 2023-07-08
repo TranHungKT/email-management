@@ -20,12 +20,7 @@ func LoginController() gin.HandlerFunc {
 
 		var user models.UserBase
 
-		err := utils.BindJSON(ctx, &user)
-		if err != nil {
-			return
-		}
-
-		err = utils.ValidateByStruct(ctx, &user)
+		err := utils.BindJSONAndValidateByStruct(ctx, &user)
 		if err != nil {
 			return
 		}
