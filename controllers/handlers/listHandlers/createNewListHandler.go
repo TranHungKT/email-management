@@ -5,9 +5,10 @@ import (
 
 	"github.com/TranHungKT/email_management/database"
 	"github.com/TranHungKT/email_management/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func CreateNewListHandler(list models.List) (interface{}, error) {
+func CreateNewListHandler(list models.List) (primitive.ObjectID, error) {
 	if list.Type == "" {
 		list.Type = models.ListTypePrivate
 	}
@@ -19,8 +20,8 @@ func CreateNewListHandler(list models.List) (interface{}, error) {
 	cursor, err := database.ListCollection().InsertOne(context.TODO(), &list)
 
 	if err != nil {
-		return cursor.InsertedID, err
+		return primitive.ObjectID{}, err
 	}
 
-	return cursor.InsertedID, nil
+	return cursor.InsertedID.(primitive.ObjectID), nil
 }

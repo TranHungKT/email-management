@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload, lists []models.List) (interface{}, error) {
+func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload, lists []models.List) (primitive.ObjectID, error) {
 	if newSubscriber.Status == "" {
 		newSubscriber.Status = models.SubscriberStatusEnabled
 	}
@@ -41,8 +41,8 @@ func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload
 	})
 
 	if err != nil {
-		return result.InsertedID, err
+		return primitive.ObjectID{}, err
 	}
 
-	return result.InsertedID, nil
+	return result.InsertedID.(primitive.ObjectID), nil
 }
