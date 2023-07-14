@@ -13,7 +13,7 @@ func GetListByIdsHandler(listIds []primitive.ObjectID) ([]models.List, error) {
 	cursor, err := database.ListCollection().Find(context.TODO(), bson.D{primitive.E{Key: "_id", Value: bson.D{primitive.E{Key: "$in", Value: listIds}}}})
 
 	if err != nil {
-		return make([]models.List, 0), err
+		return []models.List{}, err
 	}
 
 	var lists []models.List
