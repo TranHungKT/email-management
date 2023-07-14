@@ -26,9 +26,9 @@ type List struct {
 	SubscriberCount       int                `json:"subscriber_count" bson:"subscriber_count"`
 	SubscriberStatuses    map[string]int     `json:"subscriber_statuses" bson:"subscriber_statuses"`
 	SubscriberID          int                `json:"subscriber_id" bson:"subscriber_id"`
-	SubscriptionStatus    string             `json:"subscription_status" bson:"subscription_status"`
-	SubscriptionCreatedAt primitive.DateTime `json:"subscription_created_at" bson:"subscription_created_at"`
-	SubscriptionUpdatedAt primitive.DateTime `json:"subscription_updated_at" bson:"subscription_updated_at"`
+	SubscriptionStatus    string             `json:"subscription_status" bson:"subscription_status,omitempty"`
+	SubscriptionCreatedAt primitive.DateTime `json:"subscription_created_at" bson:"subscription_created_at,omitempty"`
+	SubscriptionUpdatedAt primitive.DateTime `json:"subscription_updated_at" bson:"subscription_updated_at,omitempty"`
 
 	Total int
 }

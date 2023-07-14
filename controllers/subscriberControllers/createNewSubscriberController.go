@@ -3,9 +3,10 @@ package subscriberControllers
 import (
 	"context"
 	"net/http"
-	"strings"
 	"time"
 
+	"github.com/TranHungKT/email_management/controllers/handlers/listHandlers"
+	"github.com/TranHungKT/email_management/controllers/handlers/subscriberHandlers"
 	"github.com/TranHungKT/email_management/database"
 	"github.com/TranHungKT/email_management/models"
 	"github.com/TranHungKT/email_management/utils"
@@ -19,8 +20,7 @@ func CreateNewSubscriberController() gin.HandlerFunc {
 		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		defer cancel()
 
-		var newSubscriber models.Subscriber
-
+		var newSubscriber models.NewSubscriberRequestPayload
 		err := utils.BindJSONAndValidateByStruct(ctx, &newSubscriber)
 		if err != nil {
 			return
@@ -42,16 +42,20 @@ func CreateNewSubscriberController() gin.HandlerFunc {
 			newSubscriber.Status = models.SubscriberStatusEnabled
 		}
 
-		newSubscriber.Name = strings.TrimSpace(newSubscriber.Name)
-
-		result, err := database.SubscriberCollection().InsertOne(context.TODO(), &newSubscriber)
+		lists, err := listHandlers.GetListByIdsHandler(newSubscriber.ListIds)
 
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
+			return
 		}
 
-		ctx.JSON(http.StatusAccepted, result)
+		result, err := subscriberHandlers.CreateNewSubscriberHandler(newSubscriber, lists)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(http.StatusAccepted, gin.H{"InsertedId": result})
 		ctx.Done()
 	}
 }
