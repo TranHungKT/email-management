@@ -19,7 +19,7 @@ func GetListByIdsHandler(listIds []primitive.ObjectID) ([]models.List, error) {
 	var lists []models.List
 
 	if err = cursor.All(context.TODO(), &lists); err != nil {
-		return make([]models.List, 0), err
+		return lists, err
 	}
 
 	return lists, nil

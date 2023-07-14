@@ -7,7 +7,7 @@ import (
 	"github.com/TranHungKT/email_management/models"
 )
 
-func CreateNewListHandler(list models.List) interface{} {
+func CreateNewListHandler(list models.List) (interface{}, error) {
 	if list.Type == "" {
 		list.Type = models.ListTypePrivate
 	}
@@ -19,8 +19,8 @@ func CreateNewListHandler(list models.List) interface{} {
 	cursor, err := database.ListCollection().InsertOne(context.TODO(), &list)
 
 	if err != nil {
-		panic(err)
+		return cursor.InsertedID, err
 	}
 
-	return cursor.InsertedID
+	return cursor.InsertedID, nil
 }

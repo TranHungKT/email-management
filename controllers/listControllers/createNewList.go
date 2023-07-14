@@ -36,7 +36,12 @@ func CreateNewListController() gin.HandlerFunc {
 			ctx.JSON(http.StatusConflict, gin.H{"error": "This list name is not available"})
 			return
 		}
-		result := listHandlers.CreateNewListHandler(list)
+		result, err := listHandlers.CreateNewListHandler(list)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		ctx.JSON(http.StatusAccepted, gin.H{"InsertedID": result})
 		ctx.Done()
 	}
