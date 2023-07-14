@@ -32,13 +32,15 @@ func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload
 
 	newSubscriber.Name = strings.TrimSpace(newSubscriber.Name)
 
-	result, err := database.SubscriberCollection().InsertOne(context.TODO(), primitive.D{
-		primitive.E{Key: "email", Value: newSubscriber.Email},
-		primitive.E{Key: "name", Value: newSubscriber.Name},
-		primitive.E{Key: "attributes", Value: newSubscriber.Attributes},
-		primitive.E{Key: "status", Value: newSubscriber.Status},
-		primitive.E{Key: "lists", Value: subscribedLists},
-	})
+	var subscriber = models.Subscriber{
+		Email:      newSubscriber.Email,
+		Name:       newSubscriber.Name,
+		Attributes: newSubscriber.Attributes,
+		Status:     newSubscriber.Status,
+		Lists:      subscribedLists,
+	}
+
+	result, err := database.SubscriberCollection().InsertOne(context.TODO(), &subscriber)
 
 	if err != nil {
 		return primitive.ObjectID{}, err
