@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/TranHungKT/email_management/controllers/handlers/listHandlers"
 	"github.com/TranHungKT/email_management/database"
 	"github.com/TranHungKT/email_management/models"
 	"github.com/TranHungKT/email_management/utils"
@@ -35,23 +36,9 @@ func CreateNewListController() gin.HandlerFunc {
 			ctx.JSON(http.StatusConflict, gin.H{"error": "This list name is not available"})
 			return
 		}
-
-		if list.Type == "" {
-			list.Type = models.ListTypePrivate
-		}
-
-		if list.Optin == "" {
-			list.Optin = models.ListOptinSingle
-		}
-
-		result, err := database.ListCollection().InsertOne(context.TODO(), &list)
-
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-		ctx.JSON(http.StatusAccepted, result)
+		result := listHandlers.CreateNewListHandler(list)
+		ctx.JSON(http.StatusAccepted, gin.H{"InsertedID": result})
 		ctx.Done()
-
 	}
 
 }
