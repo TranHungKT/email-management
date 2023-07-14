@@ -36,8 +36,8 @@ func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload
 		Email:      newSubscriber.Email,
 		Name:       newSubscriber.Name,
 		Attributes: newSubscriber.Attributes,
-		Status:     newSubscriber.Status,
 		Lists:      subscribedLists,
+		Status:     newSubscriber.Status,
 	}
 
 	result, err := database.SubscriberCollection().InsertOne(context.TODO(), &subscriber)
