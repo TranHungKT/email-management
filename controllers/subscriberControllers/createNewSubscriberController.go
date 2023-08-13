@@ -17,7 +17,7 @@ import (
 
 func CreateNewSubscriberController() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		var _, cancel = context.WithTimeout(context.Background(), 1000*time.Second)
 		defer cancel()
 
 		var newSubscriber models.NewSubscriberRequestPayload
