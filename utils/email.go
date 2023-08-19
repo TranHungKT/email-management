@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"path/filepath"
 
 	"gopkg.in/gomail.v2"
 )
@@ -37,7 +38,7 @@ func (r *Request) SendEmailsByGoMail() {
 	d := gomail.NewDialer("smtp.gmail.com", 465, SENDER, Password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
-	mail.SetHeader("To", "ngocanhtranthikt2002@gmail.com")
+	mail.SetHeader("To", r.to...)
 	mail.SetBody("text/html", r.body)
 	if err := d.DialAndSend(mail); err != nil {
 		fmt.Print(err)
@@ -60,7 +61,7 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	return nil
 }
 
-const DEFAULT_TEMPLATE_SOURCE = "/Users/TranHung/Documents/email-management/templates/"
+const DEFAULT_TEMPLATE_SOURCE = "static/templates/"
 const DEFAULT_TEMPLATE_FILE_TYPE = ".html"
 
 func SendEmails(toMails []string, subject string, templateName string, data interface{}) error {
@@ -68,8 +69,10 @@ func SendEmails(toMails []string, subject string, templateName string, data inte
 		return nil
 	}
 
+	fp := filepath.Join(DEFAULT_TEMPLATE_SOURCE, templateName+DEFAULT_TEMPLATE_FILE_TYPE)
+
 	r := NewRequest(toMails, subject, "")
-	if err := r.ParseTemplate(DEFAULT_TEMPLATE_SOURCE+templateName+DEFAULT_TEMPLATE_FILE_TYPE, data); err != nil {
+	if err := r.ParseTemplate(fp, data); err != nil {
 		fmt.Print("error", err)
 		fmt.Print("\n")
 		return err

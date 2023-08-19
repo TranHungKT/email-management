@@ -15,7 +15,6 @@ func sendOptinConfirmationEmail(toEmail string, list []models.List) error {
 	var templateData = struct {
 		Name  string
 		Lists []models.List
-		URL   string
 	}{
 		Name:  toEmail,
 		Lists: list,
