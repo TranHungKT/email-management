@@ -12,7 +12,9 @@ import (
 )
 
 const (
-	SENDER = "tranhung26122612@gmail.com"
+	SENDER                     = "tranhung26122612@gmail.com"
+	DEFAULT_TEMPLATE_SOURCE    = "static/templates/"
+	DEFAULT_TEMPLATE_FILE_TYPE = ".html"
 )
 
 type Request struct {
@@ -60,9 +62,6 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	r.body = buf.String()
 	return nil
 }
-
-const DEFAULT_TEMPLATE_SOURCE = "static/templates/"
-const DEFAULT_TEMPLATE_FILE_TYPE = ".html"
 
 func SendEmails(toMails []string, subject string, templateName string, data interface{}) error {
 	if len(toMails) == 0 {
