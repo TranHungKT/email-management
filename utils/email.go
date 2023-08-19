@@ -5,13 +5,13 @@ import (
 	"crypto/tls"
 	"fmt"
 	"html/template"
+	"os"
 
 	"gopkg.in/gomail.v2"
 )
 
 const (
-	SENDER   = "tranhung26122612@gmail.com"
-	PASSWORD = "nqssynijmpmdulmo"
+	SENDER = "tranhung26122612@gmail.com"
 )
 
 type Request struct {
@@ -32,8 +32,9 @@ func (r *Request) SendEmailsByGoMail() {
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", SENDER)
 	mail.SetHeader("Subject", r.subject)
+	Password := os.Getenv("EMAIL_PASSWORD")
 
-	d := gomail.NewDialer("smtp.gmail.com", 465, SENDER, PASSWORD)
+	d := gomail.NewDialer("smtp.gmail.com", 465, SENDER, Password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	mail.SetHeader("To", "ngocanhtranthikt2002@gmail.com")
