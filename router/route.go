@@ -33,4 +33,7 @@ func ListRoutes(router *gin.Engine) {
 
 func SubscriberRoutes(router *gin.Engine) {
 	router.POST("/subscriber/create-new-subscriber", middleware.RestrictedFunc(), subscriberControllers.CreateNewSubscriberController())
+	router.POST("/subscriber/confirm-optin", subscriberControllers.ConfirmOptinController())
+	// router.GET("/subscriber/confirm-optin?email", html page here)
+
 }

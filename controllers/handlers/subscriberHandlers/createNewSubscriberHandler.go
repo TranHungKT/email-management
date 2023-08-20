@@ -2,6 +2,7 @@ package subscriberHandlers
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/TranHungKT/email_management/constants"
@@ -12,12 +13,16 @@ import (
 )
 
 func sendOptinConfirmationEmail(toEmail string, list []models.List) error {
+	var optinURL = fmt.Sprintf(constants.OptinURLFormat, toEmail)
+
 	var templateData = struct {
-		Name  string
-		Lists []models.List
+		Name     string
+		Lists    []models.List
+		OptinURL string
 	}{
-		Name:  toEmail,
-		Lists: list,
+		Name:     toEmail,
+		Lists:    list,
+		OptinURL: optinURL,
 	}
 
 	return utils.SendEmails([]string{toEmail}, constants.EMAIL_CONFIRMATION_OPTIN_TITLE, constants.EMAIL_CONFIRMATION_OPTIN_TEMPLATE, templateData)
