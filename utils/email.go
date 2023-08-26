@@ -20,14 +20,14 @@ const (
 type Request struct {
 	to      []string
 	subject string
-	body    string
+	Body    string
 }
 
 func NewRequest(to []string, subject string, body string) *Request {
 	return &Request{
 		to:      to,
 		subject: subject,
-		body:    body,
+		Body:    body,
 	}
 }
 
@@ -41,7 +41,7 @@ func (r *Request) SendEmailsByGoMail() {
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	mail.SetHeader("To", r.to...)
-	mail.SetBody("text/html", r.body)
+	mail.SetBody("text/html", r.Body)
 	if err := d.DialAndSend(mail); err != nil {
 		fmt.Print(err)
 		panic(err)
@@ -49,7 +49,7 @@ func (r *Request) SendEmailsByGoMail() {
 
 }
 func (r *Request) ParseTemplate(templateFileName string, data interface{}) error {
-	t, err := template.ParseFiles(templateFileName)
+	t, err := template.ParseFiles("/Users/tranhung/Documents/email-management/static/public/successOptin.html", templateFileName)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 		return err
 	}
 
-	r.body = buf.String()
+	r.Body = buf.String()
 	return nil
 }
 

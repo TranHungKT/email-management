@@ -7,7 +7,6 @@ import (
 
 	"github.com/TranHungKT/email_management/database"
 	"github.com/TranHungKT/email_management/models"
-	"github.com/TranHungKT/email_management/utils"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -22,11 +21,7 @@ func ConfirmOptinController() gin.HandlerFunc {
 		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		defer cancel()
 
-		var confirmOptionPayload ConfirmOptionPayload
-		err := utils.BindJSONAndValidateByStruct(ctx, &confirmOptionPayload)
-		if err != nil {
-			return
-		}
+		email := ctx.Param("email")
 
 		var updatedDocument bson.M
 
@@ -38,9 +33,9 @@ func ConfirmOptinController() gin.HandlerFunc {
 			ReturnDocument: &returnDocument,
 		}
 
-		err = database.SubscriberCollection().FindOneAndUpdate(
+		err := database.SubscriberCollection().FindOneAndUpdate(
 			context.TODO(),
-			bson.D{bson.E{Key: "email", Value: confirmOptionPayload.Email}},
+			bson.D{bson.E{Key: "email", Value: email}},
 			bson.M{"$set": bson.M{"lists.$[list].subscriptionStatus": models.SubscriptionStatusConfirmed}}, &filterOption).Decode(&updatedDocument)
 
 		if err != nil {
@@ -48,7 +43,8 @@ func ConfirmOptinController() gin.HandlerFunc {
 			return
 		}
 
-		ctx.JSON(http.StatusAccepted, updatedDocument)
-
+		ctx.HTML(http.StatusOK, "confirmOptin.html", gin.H{
+			"email": "test@gmail.com",
+		})
 	}
 }

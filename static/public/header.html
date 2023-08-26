@@ -1,0 +1,33 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,600" rel="stylesheet">
+  <link href="http://localhost:3000/style/base.css" rel="stylesheet" type="text/css" />
+  <link href="http://localhost:3000/style/style.css" rel="stylesheet" type="text/css" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <link rel="shortcut icon" href="http://localhost:3000/static/images/favicon.png" type="image/x-icon" />
+</head>
+<body>
+
+<div class="container">
+  <header class="header">
+    <div class="row">
+      <div class="col-2 logo">
+        <a href="http://localhost:3000/"><img src="http://localhost:3000/static/images/logo.svg" alt="Listmonk logo" /></a>
+      </div>
+      <nav class="col-10">
+        <a class="item" href="/#download">Download</a>
+        <a class="item" href="/docs">Docs</a>
+        <div class="github-btn">
+          <a class="github-button" href="https://github.com/knadh/listmonk" data-size="large" data-show-count="true" aria-label="knadh/listmonk on GitHub">GitHub</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+</div>
+
+{{end}}

@@ -1,17 +1,15 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Multiple file upload</title>
-</head>
-<body>
-<h1>Upload multiple files with fields</h1>
-
-<form action="/upload" method="post" enctype="multipart/form-data">
-    Name: <input type="text" name="name"><br>
-    Email: <input type="email" name="email"><br>
-    Files: <input type="file" name="files" multiple><br><br>
-    <input type="submit" value="Submit">
-</form>
+{{template "header" .}}
+        <h2>Confirm Subscription</h2>
+        <p>Hello {{.email}}</p>    
+        <p>You have been added to these lists: </p>
+        <form method="post">
+            <p>HKAskdhjaksdhkahsd</p>
+           <p>
+            <input type ="hidden" name ="confirm" value = "true" />
+            <button type="submit" class="button">
+                Confirm subscription
+            </button>
+           </p>
+        </form>
 </body>
 </html>
