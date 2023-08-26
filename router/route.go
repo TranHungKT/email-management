@@ -12,8 +12,10 @@ func InitGin() {
 	middleware.InitRestrictedRoute()
 
 	var router = gin.Default()
-	router.GET("/", func(c *gin.Context) {
-		c.String(200, "Restricted")
+	router.LoadHTMLGlob("./static/public/*")
+
+	router.GET("/upload", func(ctx *gin.Context) {
+		ctx.HTML(200, "upload.html", map[string]string{"title": "Ok"})
 	})
 
 	UserRoutes(router)
@@ -34,6 +36,5 @@ func ListRoutes(router *gin.Engine) {
 func SubscriberRoutes(router *gin.Engine) {
 	router.POST("/subscriber/create-new-subscriber", middleware.RestrictedFunc(), subscriberControllers.CreateNewSubscriberController())
 	router.POST("/subscriber/confirm-optin", subscriberControllers.ConfirmOptinController())
-	// router.GET("/subscriber/confirm-optin?email", html page here)
 
 }
