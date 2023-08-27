@@ -21,7 +21,7 @@ func InitGin() {
 }
 
 func HTMLRender(router *gin.Engine) {
-	router.Static("/style", "./static")
+	router.Static("/static", "./static")
 	router.LoadHTMLGlob("./static/templates/*.html")
 	router.LoadHTMLGlob("./static/public/*.html")
 	router.GET("/subscriber/confirm-optin/:email", func(ctx *gin.Context) {
