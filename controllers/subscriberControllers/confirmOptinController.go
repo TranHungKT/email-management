@@ -43,8 +43,6 @@ func ConfirmOptinController() gin.HandlerFunc {
 			return
 		}
 
-		ctx.HTML(http.StatusOK, "confirmOptin.html", gin.H{
-			"email": "test@gmail.com",
-		})
+		ctx.HTML(http.StatusOK, "successSubscription.html", gin.H{})
 	}
 }
