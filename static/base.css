@@ -1,0 +1,18 @@
+.template-container {
+  display: flex; 
+  flex-direction: column;
+  max-width: 20%;
+  margin: auto;
+  margin-top: 100px;
+  padding: 30px;
+  background-color: white;
+  border: 1px solid #F8F9FA;
+  border-radius: 8px;
+  box-shadow: 6px 1px 17px 0px #F8F9FA;
+  -webkit-box-shadow: 6px 1px 17px 0px #F8F9FA;
+  -moz-box-shadow: 6px 1px 17px 0px #F8F9FA;
+}
+
+.body {
+  background-color: #F8F9FA ;
+}

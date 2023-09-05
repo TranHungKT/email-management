@@ -78,5 +78,4 @@ func SendEmails(toMails []string, subject string, templateName string, data inte
 	}
 	r.SendEmailsByGoMail()
 	return nil
-
 }
