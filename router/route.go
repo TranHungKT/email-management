@@ -5,6 +5,7 @@ import (
 	"github.com/TranHungKT/email_management/controllers/subscriberControllers"
 	"github.com/TranHungKT/email_management/controllers/userControllers"
 	"github.com/TranHungKT/email_management/middleware"
+	"github.com/TranHungKT/email_management/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,8 +25,12 @@ func HTMLRender(router *gin.Engine) {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("./static/templates/*.html")
 	router.LoadHTMLGlob("./static/public/*.html")
-	router.GET("/subscriber/confirm-optin/:email", func(ctx *gin.Context) {
-		email := ctx.Param("email")
+	router.GET("/subscriber/confirm-optin/:nonceKey/:cipherEmailKey/:startedTime", func(ctx *gin.Context) {
+		nonce := ctx.Param("nonceKey")
+		cipherEmail := ctx.Param("cipherEmailKey")
+
+		email := utils.DecryptCipher(nonce, cipherEmail)
+
 		ctx.HTML(200, "confirmOptin.html", map[string]string{"email": email})
 	})
 
@@ -42,6 +47,5 @@ func ListRoutes(router *gin.Engine) {
 
 func SubscriberRoutes(router *gin.Engine) {
 	router.POST("/subscriber/create-new-subscriber", middleware.RestrictedFunc(), subscriberControllers.CreateNewSubscriberController())
-	router.POST("/subscriber/confirm-optin/:email", subscriberControllers.ConfirmOptinController())
-
+	router.POST("/subscriber/confirm-optin/:nonceKey/:cipherEmailKey/:startedTime", subscriberControllers.ConfirmOptinController())
 }

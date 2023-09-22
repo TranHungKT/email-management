@@ -1,18 +1,19 @@
 {{template "header" .}}
-    <div class="template-container">
-
-        {{template "logo" .}}
-        <div class="confirm-optin-container">
+<div class="template-container">
+    {{template "logo" .}}
+    <div class="confirm-optin-container">
         <h2>Confirm Subscription</h2>
-        <p>Hello {{.email}}</p>    
+        <p>Hello {{.email}}</p>
         <p>Please confirm your subscription by clicking below button</p>
         <form method="post">
-           <p>
-            <input type ="hidden" name ="confirm" value = "true" />
-            <button type="submit" class="btn btn-primary"> Confirm subscription</button>
-           </p>
+            <p>
+                <input type="hidden" name="confirm" value="true" />
+                <button type="submit" class="btn btn-primary"> Confirm subscription</button>
+            </p>
         </form>
-        </div>
     </div>
+    
+</div>
 </body>
+
 </html>
