@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/TranHungKT/email_management/constants"
 	"github.com/TranHungKT/email_management/controllers/listControllers"
 	"github.com/TranHungKT/email_management/controllers/subscriberControllers"
 	"github.com/TranHungKT/email_management/controllers/userControllers"
@@ -25,8 +26,8 @@ func HTMLRender(router *gin.Engine) {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("./static/public/*.html")
 	router.GET("/subscriber/confirm-optin/:nonceKey/:cipherEmailKey/:startedTime", func(ctx *gin.Context) {
-		nonce := ctx.Param("nonceKey")
-		cipherEmail := ctx.Param("cipherEmailKey")
+		nonce := ctx.Param(constants.NONCE_KEY)
+		cipherEmail := ctx.Param(constants.CIPHER_EMAIL_KEY)
 
 		email := utils.DecryptCipher(nonce, cipherEmail)
 

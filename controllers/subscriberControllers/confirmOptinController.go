@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/TranHungKT/email_management/constants"
 	"github.com/TranHungKT/email_management/database"
 	"github.com/TranHungKT/email_management/models"
 	"github.com/TranHungKT/email_management/utils"
@@ -24,9 +25,9 @@ func ConfirmOptinController() gin.HandlerFunc {
 		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		defer cancel()
 
-		nonce := ctx.Param("nonceKey")
-		cipherEmail := ctx.Param("cipherEmailKey")
-		startedTime := ctx.Param("startedTime")
+		nonce := ctx.Param(constants.NONCE_KEY)
+		cipherEmail := ctx.Param(constants.CIPHER_EMAIL_KEY)
+		startedTime := ctx.Param(constants.STARTED_TIME)
 
 		sTime, err := strconv.ParseInt(startedTime, 10, 64)
 		if err != nil {
