@@ -1,28 +1,21 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Confirm subscription</title>
-    </head>
-    <body>
-        <h2>Confirm Subscription</h2>
-        <p>Hello {{.Name}}</p>    
-        <p>You have been added to these lists: </p>
-        <form method="post">
-           <ul>
-            {{range $index, $list := .Lists}}
-                <input type="hidden" name ="list" value="{{$list.Id}}"/>
-                {{if eq $list.Type "public"}}
-                    <li>{{$list.Name}}</li>
-                {{else}}
-                    <li>{{$list.Name}} (Private list)</li>
-                {{ end }}
-            {{ end }}
-           </ul>
+{{ template "header" }}
+<h2>Confirm Subscription</h2>
+<p>Hello {{.Name}}</p>
+<p>You have been added to these lists: </p>
+<form method="post">
+    <ul>
+        {{range $index, $list := .Lists}}
+        <input type="hidden" name="list" value="{{$list.Id}}" />
+        {{if eq $list.Type "public"}}
+        <li>{{$list.Name}}</li>
+        {{else}}
+        <li>{{$list.Name}} (Private list)</li>
+        {{ end }}
+        {{ end }}
+    </ul>
+    <p>
+        <a href="{{ .OptinURL }}" class="button">Confirm</a>
+    </p>
+</form>
 
-           <p>
-                <a href="{{ .OptinURL }}" class="button">Confirm</a>
-           </p>
-        </form>
-</body>
-</html>
+{{ template "footer" }}

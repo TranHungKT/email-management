@@ -23,7 +23,6 @@ func InitGin() {
 
 func HTMLRender(router *gin.Engine) {
 	router.Static("/static", "./static")
-	router.LoadHTMLGlob("./static/templates/*.html")
 	router.LoadHTMLGlob("./static/public/*.html")
 	router.GET("/subscriber/confirm-optin/:nonceKey/:cipherEmailKey/:startedTime", func(ctx *gin.Context) {
 		nonce := ctx.Param("nonceKey")
