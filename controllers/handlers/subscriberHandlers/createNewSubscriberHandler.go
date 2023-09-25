@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/TranHungKT/email_management/constants"
 	"github.com/TranHungKT/email_management/database"
@@ -13,7 +14,10 @@ import (
 )
 
 func sendOptinConfirmationEmail(toEmail string, list []models.List) error {
-	var optinURL = fmt.Sprintf(constants.OptinURLFormat, toEmail)
+	var nonce, cipherEmail = utils.EncryptCipher(toEmail)
+	var startedTime = time.Now().Local().Unix()
+
+	var optinURL = fmt.Sprintf(constants.OptinURLFormat, nonce, cipherEmail, startedTime)
 
 	var templateData = struct {
 		Name     string

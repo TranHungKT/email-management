@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"os"
-	"path/filepath"
 
 	"gopkg.in/gomail.v2"
 )
@@ -21,6 +20,12 @@ type Request struct {
 	to      []string
 	subject string
 	body    string
+}
+
+var Templates *template.Template
+
+func init() {
+	Templates = template.Must(template.ParseGlob("static/templates/*.html"))
 }
 
 func NewRequest(to []string, subject string, body string) *Request {
@@ -49,16 +54,10 @@ func (r *Request) SendEmailsByGoMail() {
 
 }
 func (r *Request) ParseTemplate(templateFileName string, data interface{}) error {
-	t, err := template.ParseFiles(templateFileName)
-	if err != nil {
-		return err
+	var buf bytes.Buffer
+	if err := Templates.ExecuteTemplate(&buf, templateFileName+DEFAULT_TEMPLATE_FILE_TYPE, data); err != nil {
+		panic(err)
 	}
-	buf := new(bytes.Buffer)
-
-	if err = t.Execute(buf, data); err != nil {
-		return err
-	}
-
 	r.body = buf.String()
 	return nil
 }
@@ -68,10 +67,8 @@ func SendEmails(toMails []string, subject string, templateName string, data inte
 		return nil
 	}
 
-	fp := filepath.Join(DEFAULT_TEMPLATE_SOURCE, templateName+DEFAULT_TEMPLATE_FILE_TYPE)
-
 	r := NewRequest(toMails, subject, "")
-	if err := r.ParseTemplate(fp, data); err != nil {
+	if err := r.ParseTemplate(templateName, data); err != nil {
 		fmt.Print("error", err)
 		fmt.Print("\n")
 		return err

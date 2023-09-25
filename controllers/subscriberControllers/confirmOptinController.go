@@ -2,11 +2,15 @@ package subscriberControllers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
+	"github.com/TranHungKT/email_management/constants"
 	"github.com/TranHungKT/email_management/database"
 	"github.com/TranHungKT/email_management/models"
+	"github.com/TranHungKT/email_management/utils"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -21,7 +25,25 @@ func ConfirmOptinController() gin.HandlerFunc {
 		var _, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		defer cancel()
 
-		email := ctx.Param("email")
+		nonce := ctx.Param(constants.NONCE_KEY)
+		cipherEmail := ctx.Param(constants.CIPHER_EMAIL_KEY)
+		startedTime := ctx.Param(constants.STARTED_TIME)
+
+		sTime, err := strconv.ParseInt(startedTime, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		tm := time.Unix(sTime, 0)
+		maximumTime := tm.Add(time.Hour * 3)
+
+		if maximumTime.Before(time.Now()) {
+			fmt.Print("OK it is invalid")
+			ctx.HTML(http.StatusOK, "outOfDateURL.html", gin.H{})
+
+			return
+		}
+
+		email := utils.DecryptCipher(nonce, cipherEmail)
 
 		var updatedDocument bson.M
 
@@ -33,7 +55,7 @@ func ConfirmOptinController() gin.HandlerFunc {
 			ReturnDocument: &returnDocument,
 		}
 
-		err := database.SubscriberCollection().FindOneAndUpdate(
+		err = database.SubscriberCollection().FindOneAndUpdate(
 			context.TODO(),
 			bson.D{bson.E{Key: "email", Value: email}},
 			bson.M{"$set": bson.M{"lists.$[list].subscriptionStatus": models.SubscriptionStatusConfirmed}}, &filterOption).Decode(&updatedDocument)
