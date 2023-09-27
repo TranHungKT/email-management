@@ -34,7 +34,7 @@ func CreateNewSubscriberController() gin.HandlerFunc {
 			return
 		}
 
-		if count > 100 {
+		if count > 0 {
 			ctx.JSON(http.StatusConflict, gin.H{"error": "This list subscriber has already subscribed, please update list for it or use other email"})
 			return
 		}

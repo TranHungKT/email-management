@@ -52,11 +52,6 @@ func getSubscribedAndDoubleOptinLists(lists []models.List) ([]models.SubscribedL
 	}
 	return subscribedLists, listsWithDoubleOptin
 }
-func timeConsumingTask(done chan bool) {
-	time.Sleep(5 * time.Second)
-	fmt.Println("Time-consuming task finished")
-	done <- true // Signal that the task is done
-}
 
 func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload, lists []models.List, done chan bool) (primitive.ObjectID, error) {
 	if newSubscriber.Status == "" {
@@ -66,7 +61,6 @@ func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload
 
 	if len(listsWithDoubleOptin) != 0 {
 		go sendOptinConfirmationEmail(newSubscriber.Email, listsWithDoubleOptin, done)
-		// go timeConsumingTask(done)
 	}
 
 	newSubscriber.Name = strings.TrimSpace(newSubscriber.Name)
