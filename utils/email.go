@@ -62,17 +62,17 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	return nil
 }
 
-func SendEmails(toMails []string, subject string, templateName string, data interface{}) error {
+func SendEmails(toMails []string, subject string, templateName string, data interface{}, done chan bool) {
 	if len(toMails) == 0 {
-		return nil
+		done <- true
 	}
 
 	r := NewRequest(toMails, subject, "")
 	if err := r.ParseTemplate(templateName, data); err != nil {
-		fmt.Print("error", err)
-		fmt.Print("\n")
-		return err
+		fmt.Print("error \n", err)
+		done <- true
 	}
 	r.SendEmailsByGoMail()
-	return nil
+	done <- true
+
 }

@@ -2,6 +2,7 @@ package subscriberControllers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -33,7 +34,7 @@ func CreateNewSubscriberController() gin.HandlerFunc {
 			return
 		}
 
-		if count > 0 {
+		if count > 100 {
 			ctx.JSON(http.StatusConflict, gin.H{"error": "This list subscriber has already subscribed, please update list for it or use other email"})
 			return
 		}
@@ -48,8 +49,9 @@ func CreateNewSubscriberController() gin.HandlerFunc {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+		done := make(chan bool)
 
-		result, err := subscriberHandlers.CreateNewSubscriberHandler(newSubscriber, lists)
+		result, err := subscriberHandlers.CreateNewSubscriberHandler(newSubscriber, lists, done)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -57,5 +59,11 @@ func CreateNewSubscriberController() gin.HandlerFunc {
 
 		ctx.JSON(http.StatusAccepted, gin.H{"InsertedId": result})
 		ctx.Done()
+
+		select {
+		case <-done:
+		default:
+			fmt.Println("Sending email is still running in the background")
+		}
 	}
 }

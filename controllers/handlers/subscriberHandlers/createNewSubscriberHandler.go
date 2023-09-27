@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func sendOptinConfirmationEmail(toEmail string, list []models.List) error {
+func sendOptinConfirmationEmail(toEmail string, list []models.List, done chan bool) {
 	var nonce, cipherEmail = utils.EncryptCipher(toEmail)
 	var startedTime = time.Now().Local().Unix()
 
@@ -29,7 +29,7 @@ func sendOptinConfirmationEmail(toEmail string, list []models.List) error {
 		OptinURL: optinURL,
 	}
 
-	return utils.SendEmails([]string{toEmail}, constants.EMAIL_CONFIRMATION_OPTIN_TITLE, constants.EMAIL_CONFIRMATION_OPTIN_TEMPLATE, templateData)
+	utils.SendEmails([]string{toEmail}, constants.EMAIL_CONFIRMATION_OPTIN_TITLE, constants.EMAIL_CONFIRMATION_OPTIN_TEMPLATE, templateData, done)
 }
 
 func getSubscribedAndDoubleOptinLists(lists []models.List) ([]models.SubscribedList, []models.List) {
@@ -52,15 +52,21 @@ func getSubscribedAndDoubleOptinLists(lists []models.List) ([]models.SubscribedL
 	}
 	return subscribedLists, listsWithDoubleOptin
 }
+func timeConsumingTask(done chan bool) {
+	time.Sleep(5 * time.Second)
+	fmt.Println("Time-consuming task finished")
+	done <- true // Signal that the task is done
+}
 
-func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload, lists []models.List) (primitive.ObjectID, error) {
+func CreateNewSubscriberHandler(newSubscriber models.NewSubscriberRequestPayload, lists []models.List, done chan bool) (primitive.ObjectID, error) {
 	if newSubscriber.Status == "" {
 		newSubscriber.Status = models.SubscriberStatusEnabled
 	}
 	subscribedLists, listsWithDoubleOptin := getSubscribedAndDoubleOptinLists(lists)
 
 	if len(listsWithDoubleOptin) != 0 {
-		sendOptinConfirmationEmail(newSubscriber.Email, listsWithDoubleOptin)
+		go sendOptinConfirmationEmail(newSubscriber.Email, listsWithDoubleOptin, done)
+		// go timeConsumingTask(done)
 	}
 
 	newSubscriber.Name = strings.TrimSpace(newSubscriber.Name)
